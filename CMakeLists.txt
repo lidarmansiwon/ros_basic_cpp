@@ -14,13 +14,13 @@ find_package(std_msgs REQUIRED)
 add_executable(helloworld_publisher src/helloworld_publisher.cpp)
 ament_target_dependencies(helloworld_publisher rclcpp std_msgs)
 
-# add_executable(helloworld_subscriber src/helloworld_subscriber.cpp)
-# ament_target_dependencies(helloworld_subscriber rclcpp std_msgs)
+add_executable(helloworld_subscriber src/helloworld_subscriber.cpp)
+ament_target_dependencies(helloworld_subscriber rclcpp std_msgs)
 
 # Install
 install(TARGETS
   helloworld_publisher
-  # helloworld_subscriber
+  helloworld_subscriber
   DESTINATION lib/${PROJECT_NAME}
 )
 
