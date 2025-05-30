@@ -21,6 +21,8 @@
 
 #include "calculator/calculator.hpp"
 
+// calculator 노드는 sub으로 받은 멤버 변수 argument_a, b와 operator 노드로부터 요청값으로 받은 연산자를 이용하여 연산한다.
+// 그리고 operator 노드에게 연산의 결괏값을 서비스 응답값으로 보낸다. 
 
 Calculator::Calculator(const rclcpp::NodeOptions & node_options)
 : Node("calculator", node_options),
@@ -70,11 +72,16 @@ Calculator::Calculator(const rclcpp::NodeOptions & node_options)
     }
   );
 
+  // 실제 서비스 요청에 해당되는 특정 수행 코드가 수행되는 부분.
+  // 서비스 요청 --> request, 서비스 응답 --> response.
+  // 아래 함수는 서비스 요청이 있을 때, 실행되는 콜백 함수.
+  // 이전에 토픽 subscriber가 받아 저장해둔 멤버 변수 a, b를 연산한 후, 그 결괏값을 서비스 응답값으로 반환.
   auto get_arithmetic_operator =
     [this](
     const std::shared_ptr<ArithmeticOperator::Request> request,
     std::shared_ptr<ArithmeticOperator::Response> response) -> void
     {
+      // request->arithmetic_operator를 argument_operator_
       argument_operator_ = request->arithmetic_operator;
       argument_result_ =
         this->calculate_given_formula(argument_a_, argument_b_, argument_operator_);
@@ -90,6 +97,9 @@ Calculator::Calculator(const rclcpp::NodeOptions & node_options)
       RCLCPP_INFO(this->get_logger(), "%s", argument_formula_.c_str());
     };
 
+  // 서비스 서버 선언
+  // public으로 정의한 부모 클래스인 Node 클래스의 함수, create_service를 사용하여 서비스 서버로 선언
+  // 서비스의 타입은 ArithmeticOperator, 서비스 이름은 arithmetic_operator, 서비스 콜백 함수는 get_arithmetic_operator
   arithmetic_argument_server_ =
     create_service<ArithmeticOperator>("arithmetic_operator", get_arithmetic_operator);
 
