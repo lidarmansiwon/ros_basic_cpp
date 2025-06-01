@@ -54,6 +54,7 @@ private:
   rclcpp::Subscription<ArithmeticArgument>::SharedPtr
     arithmetic_argument_subscriber_;
 
+  // 서비스 객체 생성. 
   rclcpp::Service<ArithmeticOperator>::SharedPtr
     arithmetic_argument_server_;
 

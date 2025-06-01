@@ -1,8 +1,8 @@
-#include <cstdio>
-#include <memory>
+#include <cstdio>   // C++에서 사용 가능한 C 언어 표준 입출력 라이브러리
+#include <memory>   
 #include <string>
 #include <utility>
-#include <random>
+#include <random>   // 랜덤 숫자 생성 라이브러리
 
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
@@ -11,6 +11,9 @@
 
 using namespace std::chrono_literals;
 
+// --> Argument 클래스 생성자
+// : 부모 클래스인 rclcpp::Node에 대한 선언 --> (Node("argument", node_options))
+// 매개변수 : 노드 이름, NodeOption 객체
 Argument::Argument(const rclcpp::NodeOptions & node_options)
 : Node("argument", node_options),
 min_random_num_(0.0),
@@ -24,11 +27,13 @@ max_random_num_(0.0)
     max_random_num_ = this->get_parameter("max_random_num").get_value<float>();
     this->update_parameter();
 
+    // QoS 라이브러리를 통한 QoS 설정 --> 이것도 나중에 QoS 한번 제대로 다룰 예정. 1부 8장 공부
     const auto QOS_RKL10V = 
       rclcpp::QoS(rclcpp::KeepLast(qos_depth)).reliable().durability_volatile();
     arithmetic_argument_publisher_ = 
       this->create_publisher<ArithmeticArgument>("arithmetic_argument",QOS_RKL10V);
     
+    // timer의 경우에는 1초당 한번씩 publish_random_arithmetic_arguments 멤버 함수를 호출하도록 설정
     timer_ = 
       this->create_wall_timer(1s, std::bind(&Argument::publish_random_arithmetic_arguments, this));
 
