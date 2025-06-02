@@ -76,17 +76,23 @@ Calculator::Calculator(const rclcpp::NodeOptions & node_options)
   // 서비스 요청 --> request, 서비스 응답 --> response.
   // 아래 함수는 서비스 요청이 있을 때, 실행되는 콜백 함수.
   // 이전에 토픽 subscriber가 받아 저장해둔 멤버 변수 a, b를 연산한 후, 그 결괏값을 서비스 응답값으로 반환.
+  // 서비스 콜백 함수. --> 람다 표현식으로 이루어짐. 
+  // 해당 람다 표현식은 Request와 Response 매개변수를 가지고 있어서, 함수 내부에서 이를 사용할 수 있다. 
   auto get_arithmetic_operator =
     [this](
     const std::shared_ptr<ArithmeticOperator::Request> request,
     std::shared_ptr<ArithmeticOperator::Response> response) -> void
     {
-      // request->arithmetic_operator를 argument_operator_
+      // argument_operator 멤버 변수에 요청 받은 연산자를 저장. 
       argument_operator_ = request->arithmetic_operator;
+      // 멤버 변수 argument_a, b + argument_operator 멤버 변수 -
+      // -> calculater_given_formula 멤버 함수에 넘겨줌
+      // 그 결과를 return 받음. 
       argument_result_ =
         this->calculate_given_formula(argument_a_, argument_b_, argument_operator_);
+      // 결과값을 response에 저장하여 서비스를 요청한 클라이언트가 이를 받을 수 있도록 함. 
       response->arithmetic_result = argument_result_;
-
+      // ostringstream 라이브러리를 이용해 string 변수에 저장. 
       std::ostringstream oss;
       oss << std::to_string(argument_a_) << ' ' <<
         operator_[argument_operator_ - 1] << ' ' <<
@@ -94,6 +100,7 @@ Calculator::Calculator(const rclcpp::NodeOptions & node_options)
         argument_result_ << std::endl;
       argument_formula_ = oss.str();
 
+      // 저장된 string 변수를 로그로 출력. 
       RCLCPP_INFO(this->get_logger(), "%s", argument_formula_.c_str());
     };
 
@@ -102,6 +109,7 @@ Calculator::Calculator(const rclcpp::NodeOptions & node_options)
   // 서비스의 타입은 ArithmeticOperator, 서비스 이름은 arithmetic_operator, 서비스 콜백 함수는 get_arithmetic_operator
   arithmetic_argument_server_ =
     create_service<ArithmeticOperator>("arithmetic_operator", get_arithmetic_operator);
+  // QoS를 지원함. 세번째 인자에 넣으면 됨. 기본적으로는 rmw_qos_profile_service_default로 설정되어있음.
 
   using namespace std::placeholders;
   arithmetic_action_server_ = rclcpp_action::create_server<ArithmeticChecker>(
