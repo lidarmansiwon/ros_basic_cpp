@@ -54,7 +54,8 @@ private:
   rclcpp::Subscription<ArithmeticArgument>::SharedPtr
     arithmetic_argument_subscriber_;
 
-  // 서비스 객체 생성. 
+  // 서비스 객체 생성. rclcpp::Service 타입의 스마트 포인터 변수. 
+  // .cpp 파일에서 create_service 함수를 통해 실체화 된다. 
   rclcpp::Service<ArithmeticOperator>::SharedPtr
     arithmetic_argument_server_;
 
