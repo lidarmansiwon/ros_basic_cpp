@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// checker는 액션 클라이언트 역할을 한다. 
 #include <memory>
 
 #include "checker/checker.hpp"
@@ -19,6 +20,8 @@
 Checker::Checker(float goal_sum, const rclcpp::NodeOptions & node_options)
 : Node("checker", node_options)
 {
+  // rclcpp_action::create_client 함수를 통해 해당 노드의 인터페이스들과 액션명을 인자로 받아, 
+  // rclcpp_action::Client를 실체화한다. 
   arithmetic_action_client_ = rclcpp_action::create_client<ArithmeticChecker>(
     this->get_node_base_interface(),
     this->get_node_graph_interface(),

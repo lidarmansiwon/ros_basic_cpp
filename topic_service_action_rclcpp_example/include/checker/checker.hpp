@@ -10,6 +10,9 @@
 
 #include "msg_srv_action_interface_example/action/arithmetic_checker.hpp"
 
+// Checker 클래스는 생성자에서 goal_sum 변수와 rclcpp::NodeOptions를 인자로 받는다. 
+// 멤버 함수로는 액션 요청을 위한 send_goal_total_sum 함수, 액션 동작 시 호출되는 콜백 함수
+// 멤버 변수로는 rclcpp_action::Client 타입의 스마트 포인터를 확인할 수 있음.
 class Checker : public rclcpp:Node
 {
 public:

@@ -18,6 +18,7 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
+// 메인문의 인자를 확인할 수 있게 됨.
 #include "rcutils/cmdline_parser.h"
 
 #include "calculator/calculator.hpp"
@@ -35,6 +36,7 @@ void print_help()
 // 다음과 같이 인자를 전달하여 print_help 함수를 실행 시킬 수 있음. 
 int main(int argc, char * argv[])
 {
+  // rcutils_cli_option_exist 함수는 실행 인자를 확인하고 그 값을 문자열 포인터로 반환해주는 역할을 함.
   if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
     print_help();
     return 0;
